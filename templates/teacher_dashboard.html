@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Teacher Dashboard - Quiz App{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Teacher Dashboard</h2>
+
+<div class="row mb-4">
+    <div class="col">
+        <a href="{{ url_for('create_quiz') }}" class="btn btn-primary">Create New Quiz</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Your Quizzes</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Deadline</th>
+                        <th>Total Submissions</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for quiz in quizzes %}
+                    <tr>
+                        <td>{{ quiz.subject }}</td>
+                        <td>{{ quiz.deadline.strftime('%Y-%m-%d %H:%M IST') }}</td>
+                        <td>{{ quiz.submissions|length }}</td>
+                        <td>
+                            <a href="{{ url_for('quiz_results', quiz_id=quiz.id) }}" 
+                               class="btn btn-info btn-sm">View Results</a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center">No quizzes created yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

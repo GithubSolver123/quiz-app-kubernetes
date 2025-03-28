@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Quiz Results - Quiz App{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Quiz Results</h2>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>{{ quiz.subject }}</h4>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Deadline:</strong> {{ quiz.deadline.strftime('%Y-%m-%d %H:%M IST') }}</p>
+                <p><strong>Total Submissions:</strong> {{ total_students }}</p>
+                <p><strong>Average Score:</strong> {{ "%.2f"|format(average_score) }}/10</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h4>Student Results</h4>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Score</th>
+                        <th>Submission Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                    <tr>
+                        <td>{{ submission.student.username }}</td>
+                        <td>{{ submission.score }}/10</td>
+                        <td>{{ submission.submission_time.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center">No submissions yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %} 

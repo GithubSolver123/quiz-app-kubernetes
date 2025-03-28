@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Quiz App{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="display-4 mb-4">Welcome to Quiz App</h1>
+    <p class="lead">A platform for conducting and taking online quizzes.</p>
+    
+    {% if current_user.is_authenticated %}
+        {% if current_user.role == 'admin' %}
+            <div class="mt-4">
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary btn-lg">Go to Admin Dashboard</a>
+            </div>
+        {% elif current_user.role == 'teacher' %}
+            <div class="mt-4">
+                <a href="{{ url_for('teacher_dashboard') }}" class="btn btn-primary btn-lg">Go to Teacher Dashboard</a>
+            </div>
+        {% else %}
+            <div class="mt-4">
+                <a href="{{ url_for('student_dashboard') }}" class="btn btn-primary btn-lg">Go to Student Dashboard</a>
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="mt-4">
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg">Login</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
