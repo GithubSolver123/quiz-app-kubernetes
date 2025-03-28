@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quiz-app
+  labels:
+    app: quiz-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: quiz-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: quiz-app
+    spec:
+      containers:
+      - name: quiz-app
+        image: quiz-app:v1
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        env:
+        - name: FLASK_APP
+          value: "app.py"
+        - name: FLASK_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: quiz-app-config
+              key: FLASK_ENV
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: quiz-app-secrets
+              key: secret-key
+        volumeMounts:
+        - name: quiz-data
+          mountPath: /app/instance
+      volumes:
+      - name: quiz-data
+        persistentVolumeClaim:
+          claimName: quiz-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quiz-app-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 5000
+  selector:
+    app: quiz-app 
